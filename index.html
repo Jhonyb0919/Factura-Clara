@@ -4,6 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#f5f8f6">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
   <title>Factura Clara</title>
   <style>
     :root{--ink:#17231f;--muted:#6d7a74;--line:#e1e8e4;--canvas:#f4f7f5;--surface:#fff;--brand:#176b50;--brand2:#0e503b;--soft:#e9f5ef;--amber:#a6630b;--amber-soft:#fff6e7;--danger:#a63d40;--shadow:0 14px 38px rgba(28,61,48,.09)}
@@ -138,6 +142,7 @@ function editRecurring(id){openRecurringForm(id)}function toggleRecurring(id){co
 function renderExpenseList(target,list,compact=false){if(!list.length){target.innerHTML=`<div class="card empty"><div class="empty-icon">🧾</div><strong>Aún no hay gastos</strong><div style="margin-top:5px">Usa el botón + para registrar el primero.</div></div>`;return}target.className=compact?'history-list':'history-list';target.innerHTML=list.map(x=>`<article class="expense"><div class="expense-icon">${icons[x.category]||'🧾'}</div><div class="expense-main"><strong>${escapeHtml(x.merchant)}</strong><span>${escapeHtml(x.category)} · ${formatDate(x.date)}${x.hasInvoice?' · Con factura':''}</span></div><div class="expense-amount">${money(x.amount)}</div></article>`).join('')}
 function loadExpenses(){try{return JSON.parse(localStorage.getItem('facturaClaraExpenses'))||[]}catch{return[]}}function loadRecurrings(){try{return JSON.parse(localStorage.getItem('facturaClaraRecurrings'))||[]}catch{return[]}}function money(value){return'B/. '+Number(value||0).toFixed(2)}function formatDate(x){if(!x)return'Sin fecha';const d=new Date(x+'T12:00:00');return d.toLocaleDateString('es-PA',{day:'numeric',month:'short'})}function humanize(x){return String(x).replaceAll('_',' ').replace(/^./,c=>c.toUpperCase())}function formatBytes(bytes){return bytes<1048576?Math.max(1,Math.round(bytes/1024))+' KB':(bytes/1048576).toFixed(1)+' MB'}function escapeHtml(x){return String(x??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
 renderDashboard();
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));
 </script>
 </body>
 </html>
